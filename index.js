@@ -41,52 +41,28 @@ app.post('/login', async(req, res) => {
         }
 })
 
-app.post('/register', async(req, res) => {
+app.post('/register', (req, res) => {
     const username =req.body.username;
     const password = req.body.password;
     const email = req.body.email;
     const role = req.body.role;
-try{
-    let data = await addNewUser(username, password, email, role);
-    if(data){
-        if (err && err.code === "ConditionalCheckFailedException"){
-        console.log("User Already exists");
-     
-        }else{ 
-            res.send({
-        "message" : "Welcome New user"
-    })
-    }
-    }
-}  
-    
-catch(err) {
-    res.statusCode = 500
-    res.send({
-        "message" : err
-    })
-}
-    
-    //const userItem = data.Items;
-    // if(username){
-    //     if(userItem.username != username){
-           
-    //         res.statusCode = 200
-    //     } else {
-    //     res.statusCode = 400;
-    //     res.send({
-    //         "message" : `${username} already exists`
-    //     })
-    // }
 
-    // } else {
-    //     res.send({
-    //         "message" : "Please enter valid credentials"
-    //     })
-    // }
-       
-        
+   
+    let data = addNewUser(username, password, email, role).then (()=> {
+      
+        res.send({
+            message : "Welcome New user"})
+    
 })
+        .catch ((err) =>{
+            console.error(err)
+        })
+       
+    
+  
+    })
+   
+
 
 
 

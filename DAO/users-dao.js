@@ -25,7 +25,7 @@ function addNewUser(username, password, email, role){
          email,
          role
         },
-        ConditionExpression: "attribute_not_exists(username)"
+       
     }
 
     
