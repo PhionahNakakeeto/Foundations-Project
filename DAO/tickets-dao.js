@@ -6,12 +6,13 @@ AWS.config.update({
 
 const docClient = new AWS.DynamoDB.DocumentClient();
 
-function submitTicket(username, amount, desc, status = 'pending'){
+function submitTicket(ticket_id, username, timestamp, amount, desc, status = 'pending'){
    const params = { 
     TableName: "tickets",
     Item : {
+        ticket_id,
         username,
-        //timestamp,
+        timestamp,
         amount,
         desc,
         status
@@ -32,12 +33,19 @@ function retrieveAllTickets(){
 function retrieveTicketsByUsername(username){
     const params = {
         TableName : "tickets",
-        Key : {
-            username
+        IndexName : "username-index",
+        KeyConditionExpression : "#u = :value",
+        ExpressionAttributeNames : {
+            "#u" : "username"
+
+        },
+        ExpressionAttributeValues : {
+            ":value" : username
         }
     }
-    return docClient.get(params).promise();
+    return docClient.query(params).promise();
 }
+
 
 function retrieveTicketsByStatus(status){
     const params = {
@@ -55,6 +63,8 @@ function retrieveTicketsByStatus(status){
     return docClient.query(params).promise();
 
 }
+
+
 
 function updateTicketsByUsername(username, newStatus){
     const params = {
@@ -77,6 +87,7 @@ module.exports = {
     submitTicket,
     retrieveAllTickets,
     retrieveTicketsByStatus,
-    updateTicketsByUsername,
-    retrieveTicketsByUsername
+    retrieveTicketsByUsername,
+    updateTicketsByUsername
+
 }

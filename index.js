@@ -58,7 +58,6 @@ try{
     const username =req.body.username;
     const password = req.body.password;
     const email = req.body.email;
-    const role = req.body.role;
     const data = await retrieveUserByUsername(username);
     const userItem = data.Item;
     if(userItem){
@@ -66,7 +65,7 @@ try{
             "message" : "User already exists"
         })
     } else {
-       await addNewUser(username, password, email, role);
+       await addNewUser(username, password, email);
        res.send({
         message : "Welcome New user"})
        }
@@ -143,7 +142,7 @@ app.post('/submitticket', async(req, res) => {
         const payload = await verifyTokenAndReturnPayload(token);
         if(payload.role === 'employee'){
            try{
-                await submitTicket(payload.username, req.body.amount, req.body.desc);
+                await submitTicket(req.body.ticket_id, payload.username, timestamp.now(), req.body.amount, req.body.desc);
                 res.send({
                     "message" : "Successfully submitted Ticket"
                 })
@@ -171,17 +170,27 @@ app.post('/submitticket', async(req, res) => {
 
 })
 
-// Endpoint for Retrieving previous tickets
+// Endpoint for Allowing employees to retrieve previous tickets by username
 
 app.get('/tickets', async(req, res) => {
-
+    const token = req.headers.authorization.split(' ')[1];
+    
    try{
-    if(req.query.status){
-        let data = await retrieveTicketsByStatus(req.query.status);
+    const payload = await verifyTokenAndReturnPayload(token);
+    if(payload.role === 'employee'){
+        if(req.query.status){
+        let data = await retrieveTicketsByUsername(req.query.username);
         res.send(data.Items);
-    } else{
+
+    }else{
         let data = await retrieveAllTickets();
         res.send(data.Items);
+    }
+}else {
+    res.send({
+        "message" : "You're not a regular employee"
+    })
+
     }
 
    }
@@ -193,14 +202,49 @@ app.get('/tickets', async(req, res) => {
    }
 })
 
+// Endpoint for Allowing any user to retrieve previous tickets by status
+
 app.get('/tickets', async(req, res) => {
+    const token = req.headers.authorization.split(' ')[1];
+    
+   try{
+    const payload = await verifyTokenAndReturnPayload(token);
+    if(payload.role === 'employee'){
+        if(req.query.status){
+        let data = await retrieveTicketsByStatus(req.query.status);
+        res.send(data.Items);
+
+    }else{
+        let data = await retrieveAllTickets();
+        res.send(data.Items);
+    }
+}else {
+    res.send({
+        "message" : "You're not a regular employee"
+    })
+
+    }
+
+
+   }
+   catch(err){
+    res.statusCode = 500;
+    res.send({
+        "message" : err
+    })
+   }
+})
+
+app.get('/tickets/:id', async(req, res) => {
     try{
         let data = await retrieveTicketsByUsername(req.params.username);
         if(data.Item){
             res.send(data.Item)
         } else {
             res.statusCode = 404
-            res.send();
+            res.send({
+                "message" : "Ticket doesn't exist"
+            });
         }
        
     } catch(err){
@@ -210,7 +254,7 @@ app.get('/tickets', async(req, res) => {
    
 })
 
-app.patch('/tickets/:username/status', async(req, res) => {
+app.patch('/tickets/:id/status', async(req, res) => {
 
  try{
     let data =  await retrieveTicketsByUsername(req.params.username);

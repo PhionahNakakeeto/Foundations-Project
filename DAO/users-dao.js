@@ -16,14 +16,14 @@ function retrieveUserByUsername(username){
     return docClient.get(params).promise();
 }
 
-function addNewUser(username, password, email, role){
+function addNewUser(username, password, email){
     const params = {
         TableName : "users",
         Item : {
          username,
          password,
          email,
-         role
+         role : "employee"
         },
        
     }
