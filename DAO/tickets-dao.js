@@ -64,13 +64,22 @@ function retrieveTicketsByStatus(status){
 
 }
 
-
-
-function updateTicketsByUsername(username, newStatus){
+function retrieveTicketsById(ticket_id){
     const params = {
         TableName : "tickets",
         Key : {
-            username
+            ticket_id
+        }
+    }
+    return docClient.get(params).promise();
+}
+
+
+function updateTicketsById(ticket_id, newStatus){
+    const params = {
+        TableName : "tickets",
+        Key : {
+            ticket_id
         },
         UpdateExpression : "set #n = :value",
         ExpressionAttributeNames : {
@@ -88,6 +97,7 @@ module.exports = {
     retrieveAllTickets,
     retrieveTicketsByStatus,
     retrieveTicketsByUsername,
-    updateTicketsByUsername
+    retrieveTicketsById,
+    updateTicketsById
 
 }

@@ -5,7 +5,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const {createJWT, verifyTokenAndReturnPayload} = require('./jwt')
 const {submitTicket, retrieveAllTickets, 
-    retrieveTicketsByStatus, updateTicketsByUsername,
+    retrieveTicketsByStatus, retrieveTicketsById, updateTicketsById,
      retrieveTicketsByUsername} = require('./DAO/tickets-dao');
 const timestamp = require('unix-timestamp');
 timestamp.round = true     
@@ -202,15 +202,15 @@ app.get('/tickets', async(req, res) => {
    }
 })
 
-// Endpoint for Allowing any user to retrieve previous tickets by status
+// Endpoint for Allowing managers to retrieve previous tickets by status
 
-app.get('/tickets', async(req, res) => {
+app.get('/ticketsbystatus', async(req, res) => {
     const token = req.headers.authorization.split(' ')[1];
     
    try{
     const payload = await verifyTokenAndReturnPayload(token);
-    if(payload.role === 'employee'){
-        if(req.query.status){
+    if(payload.role === 'admin'){
+        if(req.query.status === 'pending'){
         let data = await retrieveTicketsByStatus(req.query.status);
         res.send(data.Items);
 
@@ -220,7 +220,7 @@ app.get('/tickets', async(req, res) => {
     }
 }else {
     res.send({
-        "message" : "You're not a regular employee"
+        "message" : "You're not an Admin"
     })
 
     }
@@ -235,9 +235,9 @@ app.get('/tickets', async(req, res) => {
    }
 })
 
-app.get('/tickets/:id', async(req, res) => {
+app.get('/ticketsbyid/:ticket_id', async(req, res) => {
     try{
-        let data = await retrieveTicketsByUsername(req.params.username);
+        let data = await retrieveTicketsById(req.params.ticket_id);
         if(data.Item){
             res.send(data.Item)
         } else {
@@ -254,27 +254,38 @@ app.get('/tickets/:id', async(req, res) => {
    
 })
 
-app.patch('/tickets/:id/status', async(req, res) => {
+// Endpoint for approving/denying reimbursement tickets
+
+app.patch('/ticketsbyid/:ticket_id/status', async(req, res) => {
+    
 
  try{
-    let data =  await retrieveTicketsByUsername(req.params.username);
-
-    if(data.Item){
-        await updateTicketsByUsername(req.params.username, req.body.status);
+    let data =  await retrieveTicketsById(req.params.ticket_id);
+    let userItem = data.Item
+    if(userItem)
+    if(userItem.ticket_id && userItem.status === 'pending'){
+    
+        await updateTicketsById(req.params.ticket_id, req.body.status);
         res.statusCode = 200
         res.send({
-            "message" : "Ticket Approved"
+            "message" : "Ticket Status Updated"
         })
         
     } else{
         res.statusCode = 400;
         res.send({
-            "message" : "Ticket doesn't exist"
+            "message" : "Ticket status already updated"
         })
        
+    } else {
+        res.statusCode = 400;
+        res.send({
+            "message" : `Ticket ${req.params.ticket_id} doesn't exist`
+        })
     }
  }
  catch(err){
+    res.statusCode = 500
     res.send({
         "message" : err
     })
