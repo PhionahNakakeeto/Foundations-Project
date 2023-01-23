@@ -171,7 +171,7 @@ app.post('/submitticket', async(req, res) => {
 
 })
 
-// Endpoint for Retrieving all pending tickets
+// Endpoint for Retrieving previous tickets
 
 app.get('/tickets', async(req, res) => {
 
