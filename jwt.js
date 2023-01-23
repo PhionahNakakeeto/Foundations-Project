@@ -13,7 +13,7 @@ function createJWT(username, role){
 jwt.verify = Promise.promisify(jwt.verify)
 
 function verifyTokenAndReturnPayload(token){
-    jwt.verify(token, 'thisisasecret')
+    return jwt.verify(token, 'thisisasecret')
 }
 
 module.exports = {
