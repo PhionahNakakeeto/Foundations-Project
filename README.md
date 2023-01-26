@@ -1,166 +1,290 @@
-# Foundations-Project
-This project is an expense reimbursement system, designed to allow each associate to demonstrate their understanding of the fundamentals of software development. Employee expense reimbursement software allows you to input expenses for approval through one application. In short, you are building an API (Application Programming Interface) for employees to submit reimbursement requests and managers to approve or deny the submitted requests.
-
-Project Setup
-
-(These should be done before any feature development)
-
-The project setup is vital to the success of the first project. Ensure that these steps are completed before any feature development takes place. Utilizing the steps below to prepare for development can increase the probability of success and decrease stress levels. Here are the steps to follow:
-
-1. Set up a GitHub Repository for the project
-
-Establish a Project 1 remote repository in GitHub. This is vital to your success with this project and will help reinforce skills with Git and version control.
-
-· Set up repository for Project 1
-
-· Clone to your computer and initialize
-
-· First Commit
-
-· First Push
-
-2. Understand the use-cases of the ERS system
-
-Any good developer needs to understand what the requirements are really asking. When starting from scratch, it is imperative that a developer begins with a plan for the user experience and an outline of the functionality requirements. Review the diagram below:
-
-Functional Requirements
-
-This project’s purpose is to allow associates to develop features in a self-guided environment. Completion of this project will finalize a working ERS application before the foundations project presentation. The main goal is to build the application into a working API that satisfies all the core functionality required.
-
-Core MVP Features:
-
-1. Login/Register Feature
-
-The login/register feature is meant to give you preliminary experience handling authentication within an application. These features allow you to ensure you can track or maintain who can connect to your application. Here are the user stories:
-
-· As an Employee or Manager, I should be able to log into the application.
-
-i. Must be able to log in with an email and password
-
-· Ability to register a new account
-
-i. You must ensure the email is not already registered
-
-ii. Default to an employee role
-
-iii. Should register with at least an email and password
-
-Here is a link to all the support content that is provided for this phase 1 feature: Login/Register Feature Support
-
-2. Submit Ticket Feature
-
-The submit ticket feature is meant to guide you through input acceptance, validation, and error handling. The ability to submit a reimbursement request ticket is the core functionality of this application. Here is the user story:
-
-· Employees can submit a new reimbursement ticket
-
-i. Must have an amount
-
-ii. Must have a description
-
-iii. Should have a default status of Pending
-
-Here is a link to all the support content that is provided for this phase 1 feature: Submit Ticket Feature Support
-
-3. Ticketing System Feature
-
-The ticketing system feature is meant to act as the primary interface for internal managers. Managers will use this interface to process the pending reimbursement request tickets and either approve or deny these requests. Here is the user story:
-
-· Managers can process tickets submitted by employees
-
-i. Tickets can be Approved or Denied
-
-ii. Tickets cannot change status after processing
-
-· Pending tickets should be added to a queue or list that managers can see
-
-i. Tickets should be removed from the list, or queue, once processed (approved/denied) by a manager
-
-4. View Previous Tickets Feature
-
-The view previous tickets feature is meant for employees to see their request submission history. Employees will leverage this to see outstanding pending tickets along with tickets that have been processed by managers. Here is the user story:
-
-· As an Employee, I should be able to view all previous reimbursement ticket submissions.
-
-i. Employees should be able to filter by status (pending, approved, or denied)
-
-· Previous tickets should also show the details of submission.
-
-Checklist for Feature Development:
-
-Developing features of an application can be a complex process; however, each implementation should follow a generalized process:
-
-· Understand what this feature is meant to do
-
-· Outline a plan to implement this feature's functionality
-
-· Start writing code
-
-· Complete the development of this feature
-
-· Validate the required functionality works
-
-· Commit and push the code to a GitHub repository
-
-Completion Checklist:
-
-The checklist below is the project evaluation standard.
-
-This list will be utilized during the project presentation to demonstrate that the application meets all the functionality requirements.
-
-Using Postman or Swagger, make sure the application can complete the following tasks:
-
-1. Can use an email and password to log in
-
-2. Can register a new account with an email and password
-
-3. Will notify the user if the email is unavailable
-
-4. Can submit new reimbursement tickets
-
-5. Will make sure the reimbursement ticket author provides a description and amount during submission
-
-6. Pending tickets are in a queue/list that can only be seen by Managers
-
-7. Tickets can be processed (approved or denied) by Managers
-
-8. Employees can see a list of their previous submissions
-
-The Project Presentation:
-
-At the end of this project, you will be required to give a professional presentation. In this presentation, you should cover the technologies utilized, architecture diagram, ERD diagram, list of features Implemented, outstanding defects/issues, challenges faced, and give a thorough project demo. Ensure that you are dressed in business professional attire and can articulate how you built the application you are presenting. You will need to show that http requests can reach the API and the appropriate functionality and endpoints exist through postman or swagger.
-
-Optional Stretch Goals
-
-(Only work on these after the requirements have been completed)
-
-These features are possible extensions to the application. If there is extra time after finishing the core requirements, these features will give good implementation practice leading into Project 2. Refer to the features below to see the options:
-
-Optional Stretch Features:
-
-1. Reimbursement Types Features
-
-· Employees can add Reimbursement Types
-
-i. Travel, Lodging, Food, Other
-
-ii. Employees can view previous requests filtered by type
-
-2. Change Roles Feature
-
-· Managers can change other users’ roles
-
-i. Employee to Manager or back to Employee
-
-3. Upload Receipts Feature
-
-· Employees can add images of receipts to their reimbursement requests
-
-i. Upload and store images (ex. AWS S3 cloud storage)
-
-4. User Accounts Feature
-
-· Track additional user information (name, address, etc.)
-
-· Users can edit their account
-
-· Users can add a profile picture
+## ERS (EMPLOYEE REIMBURSEMENT SYSTEM) Documentation
+
+## Database
+I created 2 tables in DynamoBD i.e., users & tickets.
+The partition key for the users table is username.
+The partition key for the tickets table is tickets_id and I also created 2 GSIs i.e., username-index and status-index.
+The tickets table uses the UUID (Universally Unique Identifier) to auto-generate ticket_ids.
+
+To start the application, simply run npm install to install all necessary node packages, and then node index.js to start the server. The server is configured to run on PORT 8080.
+
+## Endpoints
+## Login Endpoint
+Request
+
+HTTP Method - POST
+URL - /login
+Headers - Content-Type: application/json
+Body
+{
+    "username" : "user145",
+    "password" : "password145"
+
+}
+
+## Response Scenarios
+
+## Valid username and password provided in request body
+Status Code - 200 OK
+Body
+{
+    "message": "Welcome back user145",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXIxNDUiLCJyb2xlIjoiZW1wbG95ZWUiLCJpYXQiOjE2NzQ2ODY4MzEsImV4cCI6MTY3NDc3MzIzMX0.cGR21XtbSjQ2fq_QNYNNDOhz3WY4Zlfnrwg3F8BAybA"
+}
+Headers - Content-Type: application/json
+
+## Invalid username
+Status Code - 400 Bad Request
+Body
+{
+    "message":  "message" : `User with username ${username} does not exist`
+}
+Headers - Content-Type: application/json
+
+## Invalid password, valid username
+Status Code - 400 Bad Request
+Body
+{
+    "message": "Invalid password!"
+}
+Headers - Content-Type: application/json
+
+## Register Endpoint
+Request
+
+HTTP Method - POST
+URL - /register
+Headers - Content-Type: application/json
+Body
+{
+     "username" : "user145",
+    "password" : "password145",
+    "email" : "user145@gmail.com"
+}
+
+## Response Scenarios
+
+## Successful registration
+Status Code - 200 OK
+Body
+{
+    "message": "Welcome New user"
+}
+Headers - Content-Type: application/json
+
+## Unsuccessful registration because username is already taken
+Status Code - 400 Bad Request
+Body
+{
+    "message": "User already exists"
+}
+Headers - Content-Type: application/json
+
+
+## Submit Ticket Endpoint
+Request
+
+HTTP Method - POST
+URL - /submitticket
+Body
+{
+   
+    "amount" : 150,
+    "desc" : "Dinner"
+}
+Headers
+Authorization: Bearer "token"
+We need to include the JWT as part of the Authorization header so that we can authorize access to add a reimbursement ticket
+Content-Type: application/json
+
+## Response Scenarios
+
+## Successfully added reimbursement ticket
+Status Code - 200 OK
+Body
+{
+    "message": "Successfully submitted Ticket"
+}
+Headers - Content-Type: application/json
+
+## Token where role does not equal employee
+Status Code - 401 Unauthorized
+Body
+{
+    "message": "You're not a regular employee"
+}
+Headers - Content-Type: application/json
+
+## Authorization header is not provided
+Status Code - 400 Bad Request
+Body
+{
+    "message": "Invalid JWT"
+}
+Headers - Content-Type: application/json
+
+## JWT is invalid
+Status Code - 400 Bad Request
+Body
+{
+    "message": "Invalid JWT"
+}
+Headers - Content-Type: application/json
+
+## View Previous Tickets Endpoint
+Request
+
+HTTP Method - GET
+URL - /tickets
+Body
+{}
+Headers
+Authorization: Bearer "token"
+We need to include the JWT as part of the Authorization header so that we can authorize access to a regular employee to view a past reimbursement ticket and for admins to view pending tickets
+Content-Type: application/json
+
+## Response Scenarios
+
+## Successfully retrieved reimbursement ticket(s)
+Status Code - 200 Ok
+Body
+{
+   {
+        "ticket_id": "67bf86e1-b1bf-47f7-bc31-2d7e127f030c",
+        "timestamp": 1674601976,
+        "status": "approved",
+        "amount": 150,
+        "username": "user145",
+        "desc": "Dinner"
+    }
+}
+Headers - Content-Type: application/json
+
+## Successfully retrieved employee's reimbursement ticket(s) where status query = 'denied'/'approved'/'pending'
+Status Code - 200 Ok
+Body
+{
+        "ticket_id": "1cfc3247-7bce-4ffe-a02f-35d46e1c03fe",
+        "status": "denied",
+        "timestamp": 1674703885,
+        "amount": 150,
+        "username": "user145",
+        "desc": "Dinner"
+    }
+Headers - Content-Type: application/json
+
+## Token where role equals admin with a query of status = 'pending'
+Status Code - 200 Ok
+Body
+{
+  
+        "ticket_id": "1cfc3247-7bce-4ffe-a02f-35d46e1c03fe",
+        "status": "pending",
+        "timestamp": 1674703885,
+        "amount": 150,
+        "username": "user145",
+        "desc": "Dinner"
+
+}
+Headers - Content-Type: application/json
+
+## Token where role equals admin without a query
+Status Code - 200 Ok
+Body
+{
+        "ticket_id": "67bf86e1-b1bf-47f7-bc31-2d7e127f030c",
+        "status": "approved",
+        "timestamp": 1674601976,
+        "amount": 150,
+        "username": "user145",
+        "desc": "Dinner"
+    },
+    {
+        "ticket_id": "T001",
+        "status": "approved",
+        "timestamp": 1674512181,
+        "amount": 100,
+        "username": "user123",
+        "desc": "Mileage Reimbursement"
+    },
+    {
+        "ticket_id": "b12a26a7-4098-420c-97e2-aede1010cb4f",
+        "status": "approved",
+        "timestamp": 1674686891,
+        "amount": 150,
+        "username": "user145",
+        "desc": "Dinner"
+    },
+    {
+        "ticket_id": "1cfc3247-7bce-4ffe-a02f-35d46e1c03fe",
+        "timestamp": 1674703885,
+        "status": "pending",
+        "amount": 150,
+        "username": "user145",
+        "desc": "Dinner"
+    },
+    {
+        "ticket_id": "T123",
+        "status": "approved",
+        "timestamp": 1674499452,
+        "amount": 500,
+        "username": "user123",
+        "desc": "Relocation assistance"
+    }
+Headers - Content-Type: application/json
+
+
+## Approve/Deny Tickets Endpoint
+Request
+
+HTTP Method - PATCH
+URL - /ticketsbyid/:ticket_id/status
+Body
+{
+    "status" : "approved" or "status" : "denied"
+}
+Headers
+Authorization: Bearer "token"
+We need to include the JWT as part of the Authorization header so that we can authorize access only to admins to either approve/deny  tickets
+Content-Type: application/json
+
+## Response Scenarios
+
+## Successfully updated ticket status
+
+Status Code - 200 OK
+Body
+{
+    "message" : "Ticket Status Updated"
+}
+
+Content-Type: application/json
+
+## If ticket status is already updated as approved/denied
+
+Status Code - 400 Bad Request
+Body
+{
+    "message" : "Ticket status already updated"
+}
+
+Content-Type: application/json
+
+## If tickect id is invalid
+
+Status Code - 400 Bad Request
+Body
+{
+   "message" :  "Ticket 67bf86e1-b1bf-47f7-bc31-2d7e127f030 doesn't exist"
+}
+
+Content-Type: application/json
+
+## If role is not equal to Admin
+
+Status Code - 400 Bad Request
+Body
+{
+    "message": "You're not an Admin!"
+}
+Content-Type: application/json
