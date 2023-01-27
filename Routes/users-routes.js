@@ -13,7 +13,6 @@ router.post('/login', async(req, res) => {
 
     if(userItem){
         if(userItem.password === password){
-
             const token = createJWT(userItem.username, userItem.role);
 
             res.send({
@@ -21,6 +20,7 @@ router.post('/login', async(req, res) => {
                 "token" : token
             })
          } else {
+            
             res.statusCode = 400;
             res.send({
                 "message" : "Invalid Password"
@@ -46,7 +46,7 @@ try{
     const email = req.body.email;
     const data = await retrieveUserByUsername(username);
     const userItem = data.Item;
-    if(req.body.username != " " && req.body.password != " ")
+    if(req.body.username !== " " && req.body.password !== " ")
     if(userItem){
         res.statusCode = 400;
         res.send({
@@ -59,6 +59,7 @@ try{
         message : "Welcome New user"})
        }
        else{
+        res.statusCode = 400
         res.send({
             "message" : "Please enter Username/Password!"
         })
@@ -129,4 +130,5 @@ router.get('/admin', async(req, res) => {
     })
 
 module.exports = router;
+
 

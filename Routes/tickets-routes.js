@@ -11,7 +11,7 @@ timestamp.round = true
 
 // Endpint for Submit Tickets Feature
 
-router.post('/submitticket', async(req, res) => {
+router.post('/tickets', async(req, res) => {
 
     try{
         const token = req.headers.authorization.split(' ')[1];
@@ -143,7 +143,7 @@ router.get('/tickets', async(req, res) => {
 
 // Endpoint for approving/denying reimbursement tickets
 
-router.patch('/ticketsbyid/:ticket_id/status', async(req, res) => {
+router.patch('/tickets/:ticket_id/status', async(req, res) => {
     
 
  try{

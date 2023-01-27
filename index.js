@@ -1,14 +1,6 @@
-//Import retrieve function from DAO
-// bodyParser middleware for accessing JSON request body
-// const {retrieveUserByUsername, addNewUser} = require('./DAO/users-dao');
-
-// const {createJWT, verifyTokenAndReturnPayload} = require('./jwt')
-// const {submitTicket, retrieveAllTickets, 
-//     retrieveTicketsByStatus, retrieveTicketsById, updateTicketsById,
-//      retrieveTicketsByUsername} = require('./DAO/tickets-dao');
-
 const express = require('express');
 const bodyParser = require('body-parser');
+const bcrypt = require('bcrypt');
 
 const usersRouter = require('./Routes/users-routes');
 const ticketsRouter = require('./Routes/tickets-routes');

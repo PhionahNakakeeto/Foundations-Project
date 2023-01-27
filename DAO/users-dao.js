@@ -17,6 +17,7 @@ function retrieveUserByUsername(username){
 }
 
 function addNewUser(username, password, email){
+   
     const params = {
         TableName : "users",
         Item : {
